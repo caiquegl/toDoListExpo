@@ -7,7 +7,7 @@ import { Radii, Spacing, Typography } from '@/constants/theme';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { TaskListItemProps } from '@/types/task-list-item';
 
-export function TaskListItem({ task, onToggle, onRemove }: TaskListItemProps) {
+export function TaskListItem({ task, onToggle, onRemove, onDrag, isActive }: TaskListItemProps) {
   const surface = useThemeColor({}, 'surface');
   const border = useThemeColor({}, 'border');
   const text = useThemeColor({}, 'text');
@@ -49,10 +49,20 @@ export function TaskListItem({ task, onToggle, onRemove }: TaskListItemProps) {
 
   return (
     <>
-      <View style={[styles.container, { backgroundColor: surface, borderColor: border }]}>
-        <View style={styles.content}>
-          <Text style={[styles.title, { color: text }]}>{task.title}</Text>
-          <Text style={[styles.status, { color: muted }]}>{statusLabel}</Text>
+      <View
+        style={[
+          styles.container,
+          { backgroundColor: surface, borderColor: border, opacity: isActive ? 0.7 : 1 },
+        ]}
+      >
+        <View style={styles.mainRow}>
+          <Pressable onLongPress={onDrag} style={styles.dragHandle}>
+            <MaterialIcons name="drag-handle" size={22} color={muted} />
+          </Pressable>
+          <View style={styles.content}>
+            <Text style={[styles.title, { color: text }]}>{task.title}</Text>
+            <Text style={[styles.status, { color: muted }]}>{statusLabel}</Text>
+          </View>
         </View>
         <View style={styles.actions}>
           <Pressable onPress={() => setConfirmType('toggle')}>
@@ -89,6 +99,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     gap: Spacing.sm,
+  },
+  mainRow: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+  },
+  dragHandle: {
+    paddingRight: Spacing.sm,
+    paddingVertical: Spacing.sm,
   },
   content: {
     flex: 1,

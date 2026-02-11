@@ -7,11 +7,12 @@ import { TaskList } from '@/components/task-list';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing, Typography } from '@/constants/theme';
 import { useThemeColor } from '@/hooks/use-theme-color';
-import { getTasks, removeTask, toggleTask } from '@/services/tasks-service';
+import { getTasks, removeTask, reorderTasks, toggleTask } from '@/services/tasks-service';
 import { Task } from '@/types/task';
 
 export function TodosScreenContainer() {
   const textColor = useThemeColor({}, 'text');
+  const mutedColor = useThemeColor({}, 'textMuted');
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [tasksCount, setTasksCount] = useState(0);
@@ -46,6 +47,11 @@ export function TodosScreenContainer() {
     setTasksCount(nextTasks.length);
   };
 
+  const handleReorder = async (nextTasks: Task[]) => {
+    await reorderTasks(nextTasks);
+    setTasks(nextTasks);
+  };
+
   return (
     <ThemedView
       safeArea
@@ -55,8 +61,14 @@ export function TodosScreenContainer() {
       <Text style={[styles.title, { color: textColor }]}>
         Lista de Tarefas ({tasksCount})
       </Text>
+      <Text style={[styles.helper, { color: mutedColor }]}>Segure o ícone por 1 segundo e arraste para ordenar</Text>
       <View style={styles.listWrapper}>
-        <TaskList tasks={tasks} onToggle={handleToggle} onRemove={handleRemove} />
+        <TaskList
+          tasks={tasks}
+          onToggle={handleToggle}
+          onRemove={handleRemove}
+          onReorder={handleReorder}
+        />
       </View>
       <View style={styles.fabWrapper}>
         <Fab onPress={handleOpen} />
@@ -83,6 +95,11 @@ const styles = StyleSheet.create({
     ...Typography.title,
     textAlign: 'center',
     marginVertical: Spacing.xxl,
+  },
+  helper: {
+    ...Typography.caption,
+    textAlign: 'center',
+    marginBottom: Spacing.sm,
   },
   listWrapper: {
     flex: 1,
