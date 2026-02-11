@@ -1,62 +1,62 @@
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { StyleSheet, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 
-import { Button } from '@/components/button';
 import { Fab } from '@/components/fab';
-import { FormInput } from '@/components/form-input';
-import { Modal } from '@/components/modal';
+import { TaskList } from '@/components/task-list';
+import { ModalFab } from '@/components/modal-fab';
 import { ThemedView } from '@/components/themed-view';
-import { Spacing } from '@/constants/theme';
-import { addTask } from '@/services/tasks-service';
-import { TodoFormValues } from '@/types/todo-form';
+import { Spacing, Typography } from '@/constants/theme';
+import { useThemeColor } from '@/hooks/use-theme-color';
+import { getTasks } from '@/services/tasks-service';
+import { Task } from '@/types/task';
 
 export function TodosScreenContainer() {
+  const textColor = useThemeColor({}, 'text');
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const { control, handleSubmit, reset } = useForm<TodoFormValues>({
-    defaultValues: { title: '' },
-  });
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [tasksCount, setTasksCount] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleOpen = () => setIsModalVisible(true);
-  const handleClose = () => {
-    reset();
-    setIsModalVisible(false);
-  };
+  useEffect(() => {
+    const loadTasks = async () => {
+      const data = await getTasks();
+      setTasks(data);
+      setTasksCount(data.length);
+    };
 
-  const onSubmit = handleSubmit(async ({ title }) => {
-    setIsSubmitting(true);
-    await addTask(title);
-    reset();
-    setIsSubmitting(false);
-    handleClose();
-  });
+    loadTasks();
+  }, []);
+
+  const handleOpen = () => setIsModalVisible(true);
+  const handleClose = () => setIsModalVisible(false);
+
+  const handleSaved = (nextTasks: Task[]) => {
+    setTasks(nextTasks);
+    setTasksCount(nextTasks.length);
+  };
 
   return (
     <ThemedView
       safeArea
-      safeAreaEdges={['bottom', 'left', 'right']}
+      safeAreaEdges={['top', 'bottom', 'left', 'right']}
       style={styles.container}
     >
+      <Text style={[styles.title, { color: textColor }]}>
+        Lista de Tarefas ({tasksCount})
+      </Text>
+      <View style={styles.listWrapper}>
+        <TaskList tasks={tasks} />
+      </View>
       <View style={styles.fabWrapper}>
         <Fab onPress={handleOpen} />
       </View>
-      <Modal visible={isModalVisible} title="Adicionar tarefa" onClose={handleClose}>
-        <FormInput
-          control={control}
-          name="title"
-          label="Tarefa"
-          placeholder="Digite a tarefa"
-          rules={{
-            required: 'Informe a tarefa',
-            validate: (value) => value.trim().length > 0 || 'Informe a tarefa',
-          }}
-        />
-        <View style={styles.modalActions}>
-          <Button label="Fechar" variant="secondary" onPress={handleClose} disabled={isSubmitting} />
-          <Button label="Adicionar" onPress={onSubmit} loading={isSubmitting} />
-        </View>
-      </Modal>
+      <ModalFab
+        visible={isModalVisible}
+        onClose={handleClose}
+        onSaved={handleSaved}
+        isSubmitting={isSubmitting}
+        setIsSubmitting={setIsSubmitting}
+      />
     </ThemedView>
   );
 }
@@ -64,17 +64,22 @@ export function TodosScreenContainer() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'flex-end',
+    justifyContent: 'space-between',
+    alignItems: 'stretch',
     padding: Spacing.xl,
   },
+  title: {
+    ...Typography.title,
+    textAlign: 'center',
+    marginBottom: Spacing.lg,
+  },
+  listWrapper: {
+    flex: 1,
+    alignSelf: 'stretch',
+  },
   fabWrapper: {
+    alignSelf: 'flex-end',
     marginBottom: Spacing.sm,
     marginRight: Spacing.md,
-  },
-  modalActions: {
-    flexDirection: 'row',
-    gap: Spacing.sm,
-    justifyContent: 'flex-end',
   },
 });
