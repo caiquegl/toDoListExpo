@@ -7,6 +7,7 @@ import { TaskList } from '@/components/task-list';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing, Typography } from '@/constants/theme';
 import { useThemeColor } from '@/hooks/use-theme-color';
+import { notifyTaskCompleted } from '@/services/notifications';
 import { getTasks, removeTask, reorderTasks, toggleTask } from '@/services/tasks-service';
 import { Task } from '@/types/task';
 
@@ -37,8 +38,12 @@ export function TodosScreenContainer() {
   };
 
   const handleToggle = async (id: string) => {
+    const current = tasks.find((task) => task.id === id);
     const nextTasks = await toggleTask(id);
     setTasks(nextTasks);
+    if (current?.status === 'pending') {
+      await notifyTaskCompleted(current.title);
+    }
   };
 
   const handleRemove = async (id: string) => {
