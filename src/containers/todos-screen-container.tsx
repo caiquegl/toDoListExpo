@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { Fab } from '@/components/fab';
-import { TaskList } from '@/components/task-list';
 import { ModalFab } from '@/components/modal-fab';
+import { TaskList } from '@/components/task-list';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing, Typography } from '@/constants/theme';
 import { useThemeColor } from '@/hooks/use-theme-color';
-import { getTasks } from '@/services/tasks-service';
+import { getTasks, removeTask, toggleTask } from '@/services/tasks-service';
 import { Task } from '@/types/task';
 
 export function TodosScreenContainer() {
@@ -35,6 +35,17 @@ export function TodosScreenContainer() {
     setTasksCount(nextTasks.length);
   };
 
+  const handleToggle = async (id: string) => {
+    const nextTasks = await toggleTask(id);
+    setTasks(nextTasks);
+  };
+
+  const handleRemove = async (id: string) => {
+    const nextTasks = await removeTask(id);
+    setTasks(nextTasks);
+    setTasksCount(nextTasks.length);
+  };
+
   return (
     <ThemedView
       safeArea
@@ -45,7 +56,7 @@ export function TodosScreenContainer() {
         Lista de Tarefas ({tasksCount})
       </Text>
       <View style={styles.listWrapper}>
-        <TaskList tasks={tasks} />
+        <TaskList tasks={tasks} onToggle={handleToggle} onRemove={handleRemove} />
       </View>
       <View style={styles.fabWrapper}>
         <Fab onPress={handleOpen} />
@@ -71,11 +82,12 @@ const styles = StyleSheet.create({
   title: {
     ...Typography.title,
     textAlign: 'center',
-    marginBottom: Spacing.lg,
+    marginVertical: Spacing.xxl,
   },
   listWrapper: {
     flex: 1,
     alignSelf: 'stretch',
+    padding: Spacing.lg
   },
   fabWrapper: {
     alignSelf: 'flex-end',

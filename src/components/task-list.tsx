@@ -1,18 +1,20 @@
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 
 import { TaskListItem } from '@/components/task-list-item';
+import { Spacing, Typography } from '@/constants/theme';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { TaskListProps } from '@/types/task-list';
-import { Spacing, Typography } from '@/constants/theme';
 
-export function TaskList({ tasks }: TaskListProps) {
+export function TaskList({ tasks, onToggle, onRemove }: TaskListProps) {
   const muted = useThemeColor({}, 'textMuted');
 
   return (
     <FlatList
       data={tasks}
       keyExtractor={(item) => item.id}
-      renderItem={({ item }) => <TaskListItem task={item} />}
+      renderItem={({ item }) => (
+        <TaskListItem task={item} onToggle={onToggle} onRemove={onRemove} />
+      )}
       contentContainerStyle={[styles.list, tasks.length === 0 && styles.emptyList]}
       ListEmptyComponent={
         <View style={styles.emptyState}>

@@ -20,3 +20,21 @@ export async function addTask(title: string): Promise<Task> {
   await writeJson(STORAGE_KEYS.tasks, [task, ...tasks]);
   return task;
 }
+
+export async function toggleTask(id: string): Promise<Task[]> {
+  const tasks = await getTasks();
+  const nextTasks = tasks.map((task) =>
+    task.id === id
+      ? { ...task, status: task.status === 'pending' ? 'done' : 'pending' }
+      : task
+  );
+  await writeJson(STORAGE_KEYS.tasks, nextTasks);
+  return nextTasks;
+}
+
+export async function removeTask(id: string): Promise<Task[]> {
+  const tasks = await getTasks();
+  const nextTasks = tasks.filter((task) => task.id !== id);
+  await writeJson(STORAGE_KEYS.tasks, nextTasks);
+  return nextTasks;
+}
