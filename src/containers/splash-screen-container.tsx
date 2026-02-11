@@ -11,7 +11,7 @@ export function SplashScreenContainer() {
   const palette = useMemo(() => Colors[scheme], [scheme]);
 
   const handleFinish = () => {
-    router.replace('/');
+    router.replace('/todos');
   };
 
   return (
