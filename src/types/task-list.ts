@@ -5,4 +5,5 @@ export type TaskListProps = {
   onToggle: (id: string) => void;
   onRemove: (id: string) => void;
   onReorder: (tasks: Task[]) => void;
+  onEdit: (task: Task) => void;
 };

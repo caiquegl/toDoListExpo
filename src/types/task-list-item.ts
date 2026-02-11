@@ -6,4 +6,5 @@ export type TaskListItemProps = {
   onRemove: (id: string) => void;
   onDrag: () => void;
   isActive: boolean;
+  onEdit: (task: Task) => void;
 };

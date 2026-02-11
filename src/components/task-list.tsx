@@ -7,7 +7,7 @@ import { useThemeColor } from '@/hooks/use-theme-color';
 import { Task } from '@/types/task';
 import { TaskListProps } from '@/types/task-list';
 
-export function TaskList({ tasks, onToggle, onRemove, onReorder }: TaskListProps) {
+export function TaskList({ tasks, onToggle, onRemove, onReorder, onEdit }: TaskListProps) {
   const muted = useThemeColor({}, 'textMuted');
 
   return (
@@ -22,6 +22,7 @@ export function TaskList({ tasks, onToggle, onRemove, onReorder }: TaskListProps
           onRemove={onRemove}
           onDrag={drag}
           isActive={isActive}
+          onEdit={onEdit}
         />
       )}
       contentContainerStyle={[styles.list, tasks.length === 0 && styles.emptyList]}

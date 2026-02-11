@@ -48,3 +48,12 @@ export async function reorderTasks(tasks: Task[]): Promise<Task[]> {
   await writeJson(STORAGE_KEYS.tasks, tasks);
   return tasks;
 }
+
+export async function updateTask(id: string, title: string): Promise<Task[]> {
+  const tasks = await getTasks();
+  const nextTasks = tasks.map((task) =>
+    task.id === id ? { ...task, title } : task
+  );
+  await writeJson(STORAGE_KEYS.tasks, nextTasks);
+  return nextTasks;
+}

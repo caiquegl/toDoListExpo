@@ -7,7 +7,14 @@ import { Radii, Spacing, Typography } from '@/constants/theme';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { TaskListItemProps } from '@/types/task-list-item';
 
-export function TaskListItem({ task, onToggle, onRemove, onDrag, isActive }: TaskListItemProps) {
+export function TaskListItem({
+  task,
+  onToggle,
+  onRemove,
+  onDrag,
+  isActive,
+  onEdit,
+}: TaskListItemProps) {
   const surface = useThemeColor({}, 'surface');
   const border = useThemeColor({}, 'border');
   const text = useThemeColor({}, 'text');
@@ -56,7 +63,7 @@ export function TaskListItem({ task, onToggle, onRemove, onDrag, isActive }: Tas
         ]}
       >
         <View style={styles.mainRow}>
-          <Pressable onLongPress={onDrag} style={styles.dragHandle}>
+          <Pressable onLongPress={onDrag} delayLongPress={1000} style={styles.dragHandle}>
             <MaterialIcons name="drag-handle" size={22} color={muted} />
           </Pressable>
           <View style={styles.content}>
@@ -71,6 +78,9 @@ export function TaskListItem({ task, onToggle, onRemove, onDrag, isActive }: Tas
               size={22}
               color={success}
             />
+          </Pressable>
+          <Pressable onPress={() => onEdit(task)}>
+            <MaterialIcons name="edit" size={22} color={muted} />
           </Pressable>
           <Pressable onPress={() => setConfirmType('remove')}>
             <MaterialIcons name="delete-outline" size={22} color={danger} />
