@@ -1,50 +1,54 @@
-# Welcome to your Expo app 👋
+# ToDoList (Expo + TypeScript)
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+## Como executar
 
-## Get started
+### Requisitos
 
-1. Install dependencies
+- Node.js 20
+- npm
 
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+### Instalação
 
 ```bash
-npm run reset-project
+npm install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### Executar no Android
 
-## Learn more
+```bash
+npm run android
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+## Arquitetura
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+O projeto utiliza Expo Router com roteamento por arquivos em src/app e uma arquitetura separada por responsabilidades para manter o código limpo, escalável e com baixa repetição.
 
-## Join the community
+### Estrutura principal
 
-Join our community of developers creating universal apps.
+- src/app: páginas e rotas
+- src/components: componentes de UI reutilizáveis
+- src/containers: telas com composição e orquestração
+- src/services: regras de acesso a dados e integrações
+- src/types: contratos e tipagens
+- src/constants: tokens de tema e constantes
+- src/hooks: hooks reutilizáveis
+- src/assets: imagens e recursos
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Responsabilidades
+
+- Páginas (app): apenas expõem as rotas e renderizam containers
+- Containers: coordenam estado, serviços e componentes
+- Components: UI pura, sem regras de negócio
+- Services: acesso ao storage, notificações e ações de domínio
+- Types: contratos de dados e props
+
+## Técnicas usadas
+
+- Expo Router
+- TypeScript com tipagem centralizada em src/types
+- Componentização e separação de responsabilidades
+- Tema centralizado em tokens
+- React Hook Form para formulários
+- Storage local com AsyncStorage
+- Drag and drop com react-native-draggable-flatlist
+- Notificações locais com expo-notifications
