@@ -52,3 +52,16 @@ O projeto utiliza Expo Router com roteamento por arquivos em src/app e uma arqui
 - Storage local com AsyncStorage
 - Drag and drop com react-native-draggable-flatlist
 - Notificações locais com expo-notifications
+
+## Testes
+
+### Executar testes
+
+```bash
+npm run test
+```
+
+### Testes realizados
+
+- TaskList: estado vazio e renderização de item
+- Tasks Service: add, toggle, remove, reorder, update
